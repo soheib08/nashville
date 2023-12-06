@@ -1,3 +1,9 @@
+import { ApiProperty } from '@nestjs/swagger';
+import { IsNotEmpty, IsUUID } from 'class-validator';
+
 export class DeleteTaskDto {
-  id: String;
+  @ApiProperty({ example: 'uuid example' })
+  @IsUUID()
+  @IsNotEmpty()
+  id: string;
 }

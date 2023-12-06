@@ -7,6 +7,8 @@ export class CreateTaskHandler implements ICommandHandler<CreateTaskCommand> {
   constructor(private grpcClient: TaskGrpcService) {}
 
   async execute(command: CreateTaskCommand): Promise<void> {
-    let createdTask = this.grpcClient.createTask(command);
+    console.log('command', command);
+
+    //let createdTask = this.grpcClient.createTask(command);
   }
 }
