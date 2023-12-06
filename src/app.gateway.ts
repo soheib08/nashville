@@ -47,24 +47,27 @@ export class AppGateway implements OnGatewayDisconnect, OnGatewayConnection {
 
   @SubscribeMessage('create_task')
   async createTask(
-    @MessageBody() data: CreateTaskDto,
+    @MessageBody() data: any,
     @ConnectedSocket() socket: Socket,
   ) {
+    let input = JSON.parse(data);
     return this.commandBus.execute(
-      new CreateTaskCommand(data.title, data.description, data.parent),
+      new CreateTaskCommand(input.title, input.description, input?.parent),
     );
   }
 
   @SubscribeMessage('delete_task')
   async deleteTask(
-    @MessageBody() data: DeleteTaskDto,
+    @MessageBody() data: any,
     @ConnectedSocket() socket: Socket,
   ) {
-    return this.commandBus.execute(new DeleteTaskCommand(data.id));
+    let input = JSON.parse(data);
+    return this.commandBus.execute(new DeleteTaskCommand(input.id));
   }
 
   @SubscribeMessage('task_list')
-  async taskList(@MessageBody() data: TaskListRequestDto) {
-    return this.commandBus.execute(new TaskListQuery(data.page, data.limit));
+  async taskList(@MessageBody() data: any) {
+    let input = JSON.parse(data);
+    return this.commandBus.execute(new TaskListQuery(input.page, input.limit));
   }
 }
