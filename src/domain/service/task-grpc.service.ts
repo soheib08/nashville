@@ -1,30 +1,24 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { Client, ClientGrpc, Transport } from '@nestjs/microservices';
 import { join } from 'path';
-import { Observable } from 'rxjs';
-import { CreateTaskCommand } from 'src/application/command/create-task.command';
-import { DeleteTaskCommand } from 'src/application/command/delete-task.command';
-import { TaskListQuery } from 'src/application/query/get-tasks';
-
-interface TasksService {
-  createTask(data: CreateTaskCommand): Observable<any>;
-  deleteTask(data: DeleteTaskCommand): Observable<any>;
-  findOne(data: { id: number }): Observable<any>;
-  taskList(data: TaskListQuery): Observable<any>;
-}
+import { CreateTaskCommand } from 'src/domain/command/create-task.command';
+import { DeleteTaskCommand } from 'src/domain/command/delete-task.command';
+import { TaskListDto } from 'src/application/dto/task-list.dto';
+import { TaskListQuery } from 'src/domain/query/get-tasks';
+import { TasksService } from 'src/domain/interface/grpc-client-service.interface';
 
 @Injectable()
 export class TaskGrpcService implements OnModuleInit {
+  constructor() {}
   @Client({
     transport: Transport.GRPC,
     options: {
-      url: 'localhost:50051',
+      url: process.env.GRPC_URL,
       package: 'task',
       protoPath: join(__dirname, '../../', 'task.proto'),
     },
   })
   client: ClientGrpc;
-
   private tasksService: TasksService;
 
   onModuleInit() {
@@ -32,14 +26,43 @@ export class TaskGrpcService implements OnModuleInit {
   }
 
   createTask(data: CreateTaskCommand) {
-    return this.tasksService.createTask(data);
+    return new Promise((resolve, rejects) => {
+      try {
+        let createdTaskObservable = this.tasksService.createTask(data);
+        createdTaskObservable.subscribe((result) => {
+          resolve(result);
+        });
+      } catch (err) {
+        rejects(err);
+      }
+    });
   }
 
   deleteTask(data: DeleteTaskCommand) {
-    return this.tasksService.deleteTask(data);
+    return new Promise((resolve, rejects) => {
+      try {
+        let deletedTaskObservable = this.tasksService.deleteTask(data);
+        deletedTaskObservable.subscribe((result) => {
+          resolve(result);
+        });
+      } catch (err) {
+        rejects(err);
+      }
+    });
   }
 
-  getTaskList(data: TaskListQuery): Observable<string> {
-    return this.tasksService.taskList(data);
+  getTaskList(data: TaskListQuery) {
+    return new Promise((resolve, rejects) => {
+      try {
+        let deletedTaskObservable = this.tasksService.taskList(data);
+        deletedTaskObservable.subscribe((result) => {
+          let res = new TaskListDto();
+          res = result;
+          resolve(res);
+        });
+      } catch (err) {
+        rejects(err);
+      }
+    });
   }
 }

@@ -1,4 +1,4 @@
-export class TaskModel {
+export class Task {
   readonly id: string;
   readonly parentId: string;
   readonly title: string;

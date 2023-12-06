@@ -19,5 +19,5 @@ export class TaskListDto {
   items: Array<TaskDto>;
 
   @ApiProperty({ example: 10 })
-  totalItems: number;
+  total: number;
 }

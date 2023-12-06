@@ -1,16 +1,22 @@
 import { Module } from '@nestjs/common';
-import { CreateTaskHandler } from './domain/handler/create-task.handler';
-import { DeleteTaskHandler } from './domain/handler/delete-task.handler';
+import { CreateTaskHandler } from './application/handler/create-task.handler';
+import { DeleteTaskHandler } from './application/handler/delete-task.handler';
 import { CqrsModule } from '@nestjs/cqrs';
 import { TaskGrpcService } from './domain/service/task-grpc.service';
-import { TaskListHandler } from './domain/handler/get-tasks.handler';
+import { TaskListHandler } from './application/handler/get-tasks.handler';
 import { TaskController } from './application/task.controller';
+import { ConfigModule } from '@nestjs/config';
 
 export const QueryHandlers = [TaskListHandler];
 export const CommandHandlers = [CreateTaskHandler, DeleteTaskHandler];
 
 @Module({
-  imports: [CqrsModule],
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
+    CqrsModule,
+  ],
   controllers: [TaskController],
   providers: [TaskGrpcService, ...QueryHandlers, ...CommandHandlers],
 })

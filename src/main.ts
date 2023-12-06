@@ -1,11 +1,5 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import {
-  GrpcOptions,
-  MicroserviceOptions,
-  Transport,
-} from '@nestjs/microservices';
-import { join } from 'path';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
@@ -18,18 +12,7 @@ async function bootstrap() {
     swaggerOptions: { defaultModelsExpandDepth: -1 },
   });
 
-  // const grpcOptions: GrpcOptions = {
-  //   transport: Transport.GRPC,
-  //   options: {
-  //     url: 'localhost:50051',
-  //     package: 'task',
-  //     protoPath: join(__dirname, './', 'task.proto'),
-  //   },
-  // };
-
-  // app.connectMicroservice<MicroserviceOptions>(grpcOptions);
-  // await app.startAllMicroservices();
-
-  await app.listen(3000);
+  await app.listen(process.env.PORT);
 }
+
 bootstrap();
