@@ -7,6 +7,7 @@ import { TaskListHandler } from './application/handler/get-tasks.handler';
 import { TaskController } from './application/task.controller';
 import { ConfigModule } from '@nestjs/config';
 import { validate } from './infrastructure/config/app.configuration';
+import { AppGateway } from './app.gateway';
 
 export const QueryHandlers = [TaskListHandler];
 export const CommandHandlers = [CreateTaskHandler, DeleteTaskHandler];
@@ -20,6 +21,11 @@ export const CommandHandlers = [CreateTaskHandler, DeleteTaskHandler];
     CqrsModule,
   ],
   controllers: [TaskController],
-  providers: [TaskGrpcService, ...QueryHandlers, ...CommandHandlers],
+  providers: [
+    TaskGrpcService,
+    ...QueryHandlers,
+    ...CommandHandlers,
+    AppGateway,
+  ],
 })
 export class AppModule {}
