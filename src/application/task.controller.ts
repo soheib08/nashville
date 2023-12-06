@@ -5,6 +5,7 @@ import {
   Get,
   HttpCode,
   HttpStatus,
+  Param,
   Post,
   Query,
 } from '@nestjs/common';
@@ -39,8 +40,8 @@ export class TaskController {
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiOperation({ summary: 'delete a single task' })
-  deleteTask(body: DeleteTaskDto) {
-    return this.commandBus.execute(new DeleteTaskCommand(body.id));
+  deleteTask(@Param() param: DeleteTaskDto) {
+    return this.commandBus.execute(new DeleteTaskCommand(param.id));
   }
 
   @Get()

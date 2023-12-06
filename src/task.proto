@@ -4,10 +4,14 @@ package task;
 
 service TasksService {
   rpc CreateTask(CreateTaskRequest) returns(Task){}
-  rpc DeleteTask(TaskById) returns(Task){}
+  rpc DeleteTask(TaskById) returns(DefaultRes){}
   rpc FindOne (TaskById) returns (Task) {}
   rpc TaskList (TaskListRequest) returns (TaskListDto) {}
 
+}
+
+message DefaultRes {
+  bool ok=1;
 }
 
 message CreateTaskRequest {

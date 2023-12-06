@@ -1,4 +1,9 @@
-import { Injectable, OnModuleInit } from '@nestjs/common';
+import {
+  HttpException,
+  Injectable,
+  NotFoundException,
+  OnModuleInit,
+} from '@nestjs/common';
 import { Client, ClientGrpc, Transport } from '@nestjs/microservices';
 import { join } from 'path';
 import { CreateTaskCommand } from 'src/domain/command/create-task.command';
@@ -6,6 +11,7 @@ import { DeleteTaskCommand } from 'src/domain/command/delete-task.command';
 import { TaskListDto } from 'src/application/dto/task-list.dto';
 import { TaskListQuery } from 'src/domain/query/get-tasks';
 import { TasksService } from 'src/domain/interface/grpc-client-service.interface';
+import { NotFoundError } from 'rxjs';
 
 @Injectable()
 export class TaskGrpcService implements OnModuleInit {
@@ -13,7 +19,7 @@ export class TaskGrpcService implements OnModuleInit {
   @Client({
     transport: Transport.GRPC,
     options: {
-      url: process.env.GRPC_URL,
+      url: process.env.GRPC_URL || 'localhost:50051',
       package: 'task',
       protoPath: join(__dirname, '../../', 'task.proto'),
     },
@@ -33,7 +39,7 @@ export class TaskGrpcService implements OnModuleInit {
           resolve(result);
         });
       } catch (err) {
-        rejects(err);
+        rejects();
       }
     });
   }
@@ -46,7 +52,7 @@ export class TaskGrpcService implements OnModuleInit {
           resolve(result);
         });
       } catch (err) {
-        rejects(err);
+        rejects(false);
       }
     });
   }
@@ -56,12 +62,10 @@ export class TaskGrpcService implements OnModuleInit {
       try {
         let deletedTaskObservable = this.tasksService.taskList(data);
         deletedTaskObservable.subscribe((result) => {
-          let res = new TaskListDto();
-          res = result;
-          resolve(res);
+          resolve(result);
         });
       } catch (err) {
-        rejects(err);
+        rejects();
       }
     });
   }

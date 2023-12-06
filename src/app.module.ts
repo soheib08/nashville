@@ -6,6 +6,7 @@ import { TaskGrpcService } from './domain/service/task-grpc.service';
 import { TaskListHandler } from './application/handler/get-tasks.handler';
 import { TaskController } from './application/task.controller';
 import { ConfigModule } from '@nestjs/config';
+import { validate } from './infrastructure/config/app.configuration';
 
 export const QueryHandlers = [TaskListHandler];
 export const CommandHandlers = [CreateTaskHandler, DeleteTaskHandler];
@@ -14,6 +15,7 @@ export const CommandHandlers = [CreateTaskHandler, DeleteTaskHandler];
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
+      validate,
     }),
     CqrsModule,
   ],

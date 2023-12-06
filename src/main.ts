@@ -12,7 +12,7 @@ async function bootstrap() {
     swaggerOptions: { defaultModelsExpandDepth: -1 },
   });
 
-  await app.listen(process.env.PORT);
+  await app.listen(process.env.SERVER_PORT);
 }
 
 bootstrap();
